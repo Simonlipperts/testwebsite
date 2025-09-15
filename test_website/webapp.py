@@ -1,6 +1,4 @@
 from flask import Flask
-import requests
-import configparser
 
 app = Flask(__name__)
 
