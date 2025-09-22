@@ -1,0 +1,33 @@
+{# -*- mode: jinja2 -*- #}
+<!DOCTYPE html>
+<html>
+    <header>
+    </header>
+    <body>
+
+        <h1>This is the log in page!</h1><br>
+        <div id="login_failed_message" style="display:none;"> <!--wat doet de style tag?-->
+            Login failed! User not found in our database.
+        </div><br>
+
+        <form method=POST action="/log_in"> <!--action bepaalt waar de data naartoe wordt gestuurd-->
+            <label for="first_name">First name:</label>
+            <input type="text" id="first_name" name="first_name" required><br>
+
+            <label for="last_name">Last name:</label>
+            <input type="text" id="last_name" name="last_name" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+
+            <input type="submit" value="Log in">
+        </form>
+        <script>
+            {% if login_failed %}
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('login_failed_message').style.display = 'block';
+                });
+            {% endif %}
+        </script>
+    </body>
+</html>

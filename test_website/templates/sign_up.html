@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html>
+    <header>
+        <title>sign up page</title>
+    </header>
+    <body>
+        <h1>This is the sign up page!</h1><br>
+        <form method=POST action="/sign_up">
+            <label for="first_name">First name:</label> <!--for en id attribuut moeten gelijk zijn-->
+            <input type="text" id="first_name" name="voornaam" required><br>
+
+            <label for="last_name">Last name:</label>
+            <input type="text" id="last_name" name="last_name" required><br>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required><br>
+
+            <label for="study">Field of study:</label>
+            <input type="text" id="study" name="study" required><br>
+
+            <label for="email">E-mail address:</label>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+
+            <label for="repeat_password">Repeat password:</label>
+            <input type="password" id="repeat_password" name="repeat_password" required><br>
+
+            <div id="password-message"></div><br>
+
+            <input type="submit" id="submit-btn" value="sign up" disabled>
+        </form>
+        <script src="{{ url_for('static', filename='sign_up.js') }}"></script>
+    </body>
+</html>
