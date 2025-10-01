@@ -59,6 +59,7 @@ def sign_up():
                                                     (first_name_signup, last_name_signup, int(age_signup), study_signup, \
                                                         email_signup, password_signup, repeat_password_signup))
         result = cur.fetchone()
+        #hier kan ik better enkel de email ophalen en dan zeggen, als je die al in de database zit dan kun niet meer registreren
         if result:
             return 'Error (You already have an account!)'
         elif password_signup != repeat_password_signup:
@@ -114,6 +115,7 @@ def log_in():
     if request.method == 'GET':
         return render_template('log_in.html')
     else:
+        #dit moet veranderd worden in email
         first_name_login = request.form['first_name']
         last_name_login = request.form['last_name']
         password_login = request.form['password']

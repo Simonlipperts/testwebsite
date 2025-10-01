@@ -120,7 +120,7 @@ body::before {
 
 
 
-  .position_alreadyacc {
+  .alreadyacc {
     left: 50%;
     transform: translateX(-50%);
 
@@ -143,7 +143,7 @@ body::before {
 
  }
 
-  .position_intro {
+  .intro_tekst {
     width: 100%;
     height: 40px;
     left: 50%;

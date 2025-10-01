@@ -1,33 +1,48 @@
 {# -*- mode: jinja2 -*- #}
 <!DOCTYPE html>
+<link rel='stylesheet' href= "{{url_for('static', filename='sign_up_in.css')}}"/>
 <html>
-    <header>
-    </header>
+    <head>
+        <title>HTPS Advanced</title>
+    </head>
     <body>
 
-        <h1>This is the log in page!</h1><br>
         <div id="login_failed_message" style="display:none;"> <!--wat doet de style tag?-->
             Login failed! User not found in our database.
         </div><br>
 
+        <div class="header_logo" id="header_logo">
+            <p>HTPS</p>
+        </div>
+
+        <div class="intro_tekst" style="top: 100px">
+            <p>Fill in the form below to log in.</p>
+        </div>
+
         <form method=POST action="/log_in"> <!--action bepaalt waar de data naartoe wordt gestuurd-->
-            <label for="first_name">First name:</label>
-            <input type="text" id="first_name" name="first_name" required><br>
+            <input type="text" id="first_name" name="first_name" style="top: 200px"
+            placeholder="First name" class="registration_form" required>
 
-            <label for="last_name">Last name:</label>
-            <input type="text" id="last_name" name="last_name" required><br>
+            <input type="text" id="last_name" name="last_name" style="top: 250px"
+            placeholder="Last name" class="registration_form" required>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br>
+            <input type="password" id="password" name="password" style="top: 300px"
+            placeholder="Password" class="registration_form" required><br>
 
-            <input type="submit" value="Log in">
+            <input type="submit" value="Log in" class="make_account_button" style="top: 350px">
+
+            <div class="alreadyacc" style="top: 420px" id="already_acc">
+                <p>Do you have no account yet? Sign up here please.</p>
+            </div>
         </form>
-        <script>
+        <!--login foutmelding wordt nog niet getoont-->
+        <script> 
             {% if login_failed %}
                 document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('login_failed_message').style.display = 'block';
                 });
             {% endif %}
         </script>
+        <script src="{{ url_for('static', filename='log_in.js') }}"></script>
     </body>
 </html>

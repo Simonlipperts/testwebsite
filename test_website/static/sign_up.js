@@ -1,3 +1,4 @@
+//////////////////////////////////////////////
 // Password check on sign up page
 function checkPassword(){
     const pwd = document.getElementById('password').value;
@@ -20,8 +21,21 @@ function checkPassword(){
     }
 }
 
+// header logo knop
+function logoClick() {
+    console.log('Logo aangklikt!')
+    window.location.href = '/home'
+}
+
+// already have an account knop
+function alreadyAccClick() {
+    console.log('Already acc knop aangelkikt!')
+    window.location.href = '/log_in'
+}
+
 // Start when page loads
 document.addEventListener('DOMContentLoaded', function() {
+
     const pwd = document.getElementById('password');
     const repeat = document.getElementById('repeat_password');
     if (pwd && repeat) {
@@ -29,4 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
         repeat.addEventListener('input', checkPassword);
         checkPassword();
     }
+
+    const headerLogo = document.getElementById('header_logo');
+        if (headerLogo) {
+            headerLogo.addEventListener('click', logoClick);
+        } else {
+            console.warn('Header logo element niet gevonden');
+        }
+
+    const alreadyAcc = document.getElementById('already_acc');
+    if (alreadyAcc) {
+        alreadyAcc.addEventListener('click', alreadyAccClick)
+    } else {
+        console.warn('Already account knop niet gevonden')
+    }
 });
+////////////////////////////////////////////////////
