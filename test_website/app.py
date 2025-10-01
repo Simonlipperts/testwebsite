@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_mail import Mail, Message
 import pymysql
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
-#"C:\Users\simon\OneDrive\Documents\GitHub\testwebsite\test_website"
+#laptop: "C:\Users\simon\Documents\GitHub\testwebsite\test_website"
+#pc: Users
 # gmail wachtwoord: tnsh ezxm ufxe hdlh
 # capitant wachtwoord: trkw aiye xdqq jhct
 
@@ -15,13 +16,13 @@ def get_db():
     db = pymysql.connect(
         host='localhost',
         user='root',
-        database='trading_sim',
+        database='simulation',
         password='CocacolC123!'
     )
     return db
 
 # Email configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com' # of smtp.capitant.be
+app.config['MAIL_SERVER'] = 'smtp.gmail.com' 
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
@@ -75,9 +76,7 @@ def sign_up():
             token = s.dumps(email_signup, salt = 'email-confirm')
             msg = Message('Confirm your Email', sender=('Capitant Team', 'simon.lipperts@capitant.be'), recipients=[email_signup])
             link = url_for('confirm_email', token=token, _external=True)
-            msg.html = render_template('email.html', first_name_signup, link) f"Hi {first_name_signup}, Great news, you are officially part of the Capitant community! Whether you are here to sharpen your investing skills \
-                            or to take your very first steps in the stock market, we are excited to have you on board. Confirm your Email now to get instant access to \
-                            howtopickastock.com and to begin your journey in the world of finance. Your confirmation link is: {link}. Happy investing, team Capitant."
+            msg.html = render_template('email.html', first_name_signup=first_name_signup, link=link) 
             mail.send(msg)
 
             cur.execute('INSERT INTO INVESTORS (first_name, last_name, age, study, email, password, repeat_password) \

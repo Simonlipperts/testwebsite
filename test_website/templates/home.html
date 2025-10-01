@@ -1,20 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
+<link  rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
 
 <html>
-    <header>
-        <title>Home page</title>
-    </header>
-    <body>
-        <h1>This is the home page!</p><br>
+<head>
+    <title>HTPS Advanced</title>
+</head>
 
-        <button>
-            <a href="/sign_up">Ga naar de sign up page!</a>
-        </button><br>
+<body>
+    <div class="header_line">
+
+        <div class="header_button" style="top: 15px; right: 150px;" id="header_register_button">
+            <p>Register</p>
+        </div>
+
+        <div class="header_button" style="top: 15px; right: 40px;" id="header_signin_button">
+            <p>Sign in</p>
+        </div>
+
+        <div class="header_logo" id="header_logo">
+            <p>HTPS</p>
+        </div>
 
         <div class="clock">
             <p id="clock"></p>
         </div>
-        
-        <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
-    </body>
+
+    </div>
+    <img src="{{ url_for('static', filename='images/banner_home.jpg') }}" alt="Trading foto" class="home_image">
+
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+</body>
 </html>

@@ -1,0 +1,165 @@
+ /* google fonts importeren */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;700&display=swap');
+
+
+/* CSS reset om standaard whitespace weg te halen */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Voeg dit toe aan je body */
+body {
+    background-image: url('/static/images/banner_home.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+/* Donkere overlay over hele pagina */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* 60% donkere overlay */
+    z-index: -1; /* Achter alle content */
+}
+
+/* Zorg dat je content boven de overlay staat */
+.header_logo,
+.registration_form,
+.make_account_button,
+.position_intro,
+.position_alreadyacc {
+    z-index: 1;
+    position: relative;
+}
+
+.header_line {
+    height: 80px;
+    width: 100%;
+    background-color: #ffffff;
+    margin: 0;
+}
+
+.header_logo {
+    width: 150px;
+    height: 80px;
+
+    font-size: 1.8em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 550;
+    display: flex;
+    align-items: center;  /* vertical alignment */
+    justify-content: center; /* horizontal alignment */
+    color: rgb(0, 0, 0);
+
+    cursor: pointer;
+
+    background-color: #ffffff;
+    position:absolute;
+    top:0px;
+    left:0px;
+    }
+ 
+ .registration_form {
+    width: 500px;
+    height: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 1em;
+    font-weight: 300;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;  /* vertical alignment */
+    justify-content: flex-start; /* horizontal alignment */
+    color: rgb(0, 0, 0);
+    opacity: 0.6;
+
+    border: 1px solid rgb(0, 0, 0, 0.5);
+    border-radius: 0.2em;
+
+    background-color: #ffffff;
+    position: absolute;
+    padding-left: 10px; /* ← Beetje ruimte van de rand */
+
+ }
+
+  .make_account_button {
+    width: 500px;
+    height: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 1em;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;  /* vertical alignment */
+    justify-content: center; /* horizontal alignment */
+    color: rgb(255, 255, 255);
+    opacity: 1;
+
+    cursor: pointer;
+
+    border: none;
+    border-radius: 0.2em;
+
+    background-color: #577F84;
+    position: absolute;
+    padding-left: 10px; /* ← Beetje ruimte van de rand */
+
+ }
+
+
+
+  .position_alreadyacc {
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 0.7em;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;  /* vertical alignment */
+    justify-content: center; /* horizontal alignment */
+    color: rgb(255, 255, 255);
+    opacity: 0.9;
+
+    cursor: pointer;
+
+    border: none;
+    border-radius: 0em;
+
+    /*background-color: #ffffff; */
+    position: absolute;
+
+ }
+
+  .position_intro {
+    width: 100%;
+    height: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 2.2em;
+    font-weight: 100;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;  /* vertical alignment */
+    justify-content: center; /* horizontal alignment */
+    color: rgb(255, 255, 255);
+    opacity: 0.3;
+
+    border: none;
+    border-radius: 0em;
+    position: absolute;
+
+ }
