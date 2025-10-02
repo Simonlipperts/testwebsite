@@ -5,23 +5,22 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_sqlalchemy import SQLAlchemy
 import psycopg2
 import os
+from dotenv import load_dotenv
 #laptop: "C:\Users\simon\Documents\GitHub\testwebsite\test_website"
 #pc: Users
 # gmail wachtwoord: tnsh ezxm ufxe hdlh
 # capitant wachtwoord: trkw aiye xdqq jhct
 
+load_dotenv()
 
 # Flask app configuration
 app = Flask(__name__)
-
-db = SQLAlchemy()
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 # Database configuration
 def get_db():
     db = psycopg2.connect(
         host=os.getenv('POSTGRES_HOST'),
-        port=int(os.getenv('POSTGRES_PORT', 5432)),
+        port=int(os.getenv('POSTGRES_PORT', 6543)),
         database=os.getenv('POSTGRES_DATABASE'),
         user=os.getenv('POSTGRES_USER'),
         password=os.getenv('POSTGRES_PASSWORD')
