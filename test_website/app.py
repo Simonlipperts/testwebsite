@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_mail import Mail, Message
 import pymysql
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from flask_sqlalchemy import SQLAlchemy
+import psycopg2
 #laptop: "C:\Users\simon\Documents\GitHub\testwebsite\test_website"
 #pc: Users
 # gmail wachtwoord: tnsh ezxm ufxe hdlh
@@ -11,12 +13,17 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 # Flask app configuration
 app = Flask(__name__)
 
+db = SQLAlchemy()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:CocacolC123!@db.gczsonynoeokdmjwecqs.supabase.co:5432/postgres'
+db.init_app(app)
+
 # Database configuration
 def get_db():
-    db = pymysql.connect(
-        host='localhost',
-        user='root',
-        database='simulation',
+    db = psycopg2.connect(
+        host='db.gczsonynoeokdmjwecqs.supabase.co',
+        port=5432,
+        database='postgres',
+        user='postgres',
         password='CocacolC123!'
     )
     return db
@@ -53,7 +60,7 @@ def sign_up():
 
         db = get_db()
         cur = db.cursor()
-        cur.execute('SELECT * FROM INVESTORS WHERE first_name = %s AND last_name = %s AND \
+        cur.execute('SELECT * FROM investors WHERE first_name = %s AND last_name = %s AND \
                                                     age = %s AND study = %s AND email = %s AND \
                                                     password = %s AND repeat_password = %s', \
                                                     (first_name_signup, last_name_signup, int(age_signup), study_signup, \
@@ -80,7 +87,7 @@ def sign_up():
             msg.html = render_template('email.html', first_name_signup=first_name_signup, link=link) 
             mail.send(msg)
 
-            cur.execute('INSERT INTO INVESTORS (first_name, last_name, age, study, email, password, repeat_password) \
+            cur.execute('INSERT INTO investors (first_name, last_name, age, study, email, password, repeat_password) \
                         VALUES (%s, %s, %s, %s, %s, %s, %s)',(first_name_signup, last_name_signup, age_signup, study_signup, \
                                                                 email_signup, password_signup, repeat_password_signup))
             db.commit()
@@ -100,7 +107,7 @@ def confirm_email(token):
     
     db = get_db()
     cur = db.cursor()
-    cur.execute('UPDATE INVESTORS SET email_confirmed = %s WHERE email = %s', (True, email))
+    cur.execute('UPDATE investors SET email_confirmed = %s WHERE email = %s', (True, email))
     db.commit()
     cur.close()
     db.close()
@@ -122,7 +129,7 @@ def log_in():
 
         db = get_db()
         cur = db.cursor()
-        cur.execute('SELECT * FROM INVESTORS WHERE first_name = %s AND last_name = %s AND password = %s',(first_name_login, last_name_login, password_login))
+        cur.execute('SELECT * FROM Investors WHERE first_name = %s AND last_name = %s AND password = %s',(first_name_login, last_name_login, password_login))
         result = cur.fetchone()
         if result:
             db.close()
