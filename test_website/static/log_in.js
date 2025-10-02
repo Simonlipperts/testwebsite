@@ -30,3 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn('Already account knop niet gevonden')
     }
 });
+
+
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+           || window.innerWidth <= 768;
+}
+
+if (isMobileDevice()) {
+    document.body.innerHTML = '<h1>Sorry, deze website is niet toegankelijk op mobiele apparaten</h1>';
+}
