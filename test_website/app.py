@@ -15,17 +15,16 @@ import os
 app = Flask(__name__)
 
 db = SQLAlchemy()
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:CocacolC123!@db.gczsonynoeokdmjwecqs.supabase.co:5432/postgres'
-db.init_app(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 # Database configuration
 def get_db():
     db = psycopg2.connect(
-        host=os.getenv('DB_HOST'),
-        port=os.getenv('DB_PORT'),
-        database=os.getenv('DB_NAME'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASSWORD')
+        host=os.getenv('POSTGRES_HOST'),
+        port=int(os.getenv('POSTGRES_PORT', 5432)),
+        database=os.getenv('POSTGRES_DATABASE'),
+        user=os.getenv('POSTGRES_USER'),
+        password=os.getenv('POSTGRES_PASSWORD')
     )
     return db
 
@@ -130,7 +129,7 @@ def log_in():
 
         db = get_db()
         cur = db.cursor()
-        cur.execute('SELECT * FROM Investors WHERE first_name = %s AND last_name = %s AND password = %s',(first_name_login, last_name_login, password_login))
+        cur.execute('SELECT * FROM investors WHERE first_name = %s AND last_name = %s AND password = %s',(first_name_login, last_name_login, password_login))
         result = cur.fetchone()
         if result:
             db.close()
