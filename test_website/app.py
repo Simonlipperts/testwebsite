@@ -3,6 +3,7 @@ from flask_mail import Mail, Message
 import pymysql
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_sqlalchemy import SQLAlchemy
+import flask_sqlalchemy
 import psycopg2
 #laptop: "C:\Users\simon\Documents\GitHub\testwebsite\test_website"
 #pc: Users
