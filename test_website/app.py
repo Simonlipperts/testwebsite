@@ -3,8 +3,8 @@ from flask_mail import Mail, Message
 import pymysql
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_sqlalchemy import SQLAlchemy
-import flask_sqlalchemy
 import psycopg2
+import os
 #laptop: "C:\Users\simon\Documents\GitHub\testwebsite\test_website"
 #pc: Users
 # gmail wachtwoord: tnsh ezxm ufxe hdlh
@@ -21,11 +21,11 @@ db.init_app(app)
 # Database configuration
 def get_db():
     db = psycopg2.connect(
-        host='db.gczsonynoeokdmjwecqs.supabase.co',
-        port=5432,
-        database='postgres',
-        user='postgres',
-        password='CocacolC123!'
+        host=os.getenv('DB_HOST'),
+        port=os.getenv('DB_PORT'),
+        database=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD')
     )
     return db
 
