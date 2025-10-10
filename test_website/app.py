@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 import pymysql
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
@@ -15,6 +15,7 @@ load_dotenv()
 
 # Flask app configuration
 app = Flask(__name__)
+app.secret_key = 'CocacolC123!'
 
 # Database configuration
 def get_db():
@@ -126,20 +127,30 @@ def log_in():
         last_name_login = request.form['last_name']
         password_login = request.form['password']
 
+        session['first_name_login'] = first_name_login
+        #session['last_name_login'] = last_name_login
+        #session['password_login'] = password_login
+
         db = get_db()
         cur = db.cursor()
         cur.execute('SELECT * FROM investors WHERE first_name = %s AND last_name = %s AND password = %s',(first_name_login, last_name_login, password_login))
         result = cur.fetchone()
         if result:
+            session['first_name_login'] = first_name_login
+
             db.close()
             cur.close()
-            return redirect('/simulation')
+            return redirect('/chart')
         else:
             return render_template('log_in.html', login_failed = True) #hier moet eigenlijk ook de data van de vorige keer onthouden worden en een bericht weergegeven worden met log_in failed
         
-@app.route('/simulation')
+@app.route('/chart')
 def simulation():
-    return render_template('simulation.html')
+    if 'first_name_login' in session:
+        first_name_login = session['first_name_login']
+        return render_template('chart.html')
+    else:
+        return redirect('/log_in')
 
 # FLASK_DEBUG=1
 if __name__ == '__main__':
