@@ -1,27 +1,19 @@
 <!DOCTYPE html>
-<link  rel="stylesheet" href="{{ url_for('static', filename='chart.css') }}" />
-<script src="https://s3.tradingview.com/tv.js"></script>
-<script src="{{ url_for('static', filename='chart.js') }}"></script>
-
 <html>
 <head>
     <title>Trading Chart</title>
-  
+    <link rel="stylesheet" href="{{ url_for('static', filename='chart.css') }}" />
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </head>
 <body>
     <header class="header_stroke">
-        <div class="header_logo" style="top: 0px; left: 0px;">
+        <div class="header_logo" style="top:0;left:0;">
             <p class="header_logo_tekst" id="header_logo">HTPS</p>
         </div>
-        <div class="header_links">
-            <p style="position: absolute; top: 17.5px; right: 30.5px">ACCOUNT</p>
-        </div>
-        <div class="header_links">
-            <p style="position: absolute; top: 17.5px; right: 180.5px">PORTFOLIO</p>
-        </div>
-        <div class="header_links">
-            <p style="position: absolute; top: 17.5px; right: 337.5px">TRADING</p>
-        </div>
+        <div class="header_links"><p style="position:absolute;top:17.5px;right:30.5px">ACCOUNT</p></div>
+        <div class="header_links"><p style="position:absolute;top:17.5px;right:180.5px">PORTFOLIO</p></div>
+        <div class="header_links"><p style="position:absolute;top:17.5px;right:337.5px">TRADING</p></div>
         <div class="gray_line_horizontal"></div>
     </header>
 
@@ -31,30 +23,29 @@
 
     <section class="trading-form-section">
         <div class="trading-form">
-            <!-- Buy/Sell Tabs -->
             <div class="form-tabs">
                 <button class="tab-button active" data-tab="buy">Buy</button>
                 <button class="tab-button" data-tab="sell">Sell</button>
             </div>
 
-            <!-- Form Content -->
             <div class="form-content">
-                <!-- Symbol -->
+                <!-- Live Ticker Control -->
                 <div class="form-group">
-                    <label for="symbol">Symbol</label>
-                    <input type="text" id="symbol" name="symbol" value="AAPL" class="form-input">
+                    <label for="symbol">Symbol (TradingView & Socket)</label>
+                    <input type="text" id="symbol" name="symbol" value="NASDAQ:AAPL" class="form-input">
+                    <button type="button" id="apply-ticker" class="review-button" style="margin-top:6px;">Apply</button>
                 </div>
 
-                <!-- Market Price -->
+                <!-- Live Market Price -->
                 <div class="form-group">
                     <label>Market Price</label>
-                    <span class="market-price">$213.92</span>
+                    <span class="market-price" id="live-price">$0.00</span>
                 </div>
 
                 <!-- Quantity -->
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="number" id="quantity" name="quantity" value="1" class="form-input">
+                    <input type="number" id="quantity" name="quantity" value="1" class="form-input" min="1">
                 </div>
 
                 <!-- Order Type -->
@@ -80,7 +71,7 @@
                 <!-- Estimated Cost -->
                 <div class="form-group cost-info">
                     <span class="cost-label">Estimated Cost</span>
-                    <span class="cost-value">$213.92</span>
+                    <span class="cost-value" id="est-cost">$0.00</span>
                 </div>
 
                 <!-- Buying Power -->
@@ -89,49 +80,66 @@
                     <span class="cost-value">–</span>
                 </div>
 
-                <!-- Review Order Button -->
                 <button type="submit" class="review-button">Review Order</button>
             </div>
         </div>
     </section>
 
-    <!-- Voeg dit toe onder je chart sectie -->
     <section class="portfolio-section">
         <div class="portfolio-container">
-            <!-- Tab Navigation -->
             <div class="portfolio-tabs">
                 <button class="portfolio-tab active" data-tab="position">Position</button>
                 <button class="portfolio-tab" data-tab="orders">Orders</button>
             </div>
-
-            <!-- Portfolio Table -->
             <div class="portfolio-table-container">
                 <table class="portfolio-table">
                     <thead>
                         <tr>
-                            <th>Symbol</th>
-                            <th>Qty</th>
-                            <th>Market Value</th>
-                            <th>Avg Entry</th>
-                            <th>Cost Basis</th>
-                            <th>Today's P/L (%)</th>
-                            <th>Today's P/L ($)</th>
-                            <th>Total P/L (%)</th>
-                            <th>Total P/L ($)</th>
-                            <th>Action</th>
+                            <th>Symbol</th><th>Qty</th><th>Market Value</th><th>Avg Entry</th><th>Cost Basis</th>
+                            <th>Today's P/L (%)</th><th>Today's P/L ($)</th><th>Total P/L (%)</th><th>Total P/L ($)</th><th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="no-positions">
-                            <td colspan="10">No positions found.</td>
-                        </tr>
+                        <tr class="no-positions"><td colspan="10">No positions found.</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
+
     <img src="{{ url_for('static', filename='images/capitant-logo.png') }}" alt="Chart logo" class="bottom-logo">
     <div class="gray_line_vertical_right"></div>
     <div class="gray_line_vertical_left"></div>
+
+    <!-- Socket + dynamic logic -->
+    <script>
+        const socket = io();
+
+        let currentPrice = 0;
+
+        socket.on('price_update', (data) => {
+            currentPrice = parseFloat(data.price);
+            document.getElementById('live-price').textContent = '$' + currentPrice.toFixed(2);
+            updateEstCost();
+        });
+
+        function updateEstCost() {
+            const qty = parseFloat(document.getElementById('quantity').value) || 0;
+            document.getElementById('est-cost').textContent = '$' + (qty * currentPrice).toFixed(2);
+        }
+
+        document.getElementById('quantity').addEventListener('input', updateEstCost);
+
+        document.getElementById('apply-ticker').addEventListener('click', () => {
+            const t = document.getElementById('symbol').value.trim();
+            if (t) {
+                socket.emit('change_ticker', { ticker: t });
+                if (window.tvWidget) {
+                    tvWidget.chart().setSymbol(t.replace('NASDAQ:', ''), tvWidget.chart().resolution());
+                }
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='chart.js') }}"></script>
 </body>
 </html>

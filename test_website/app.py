@@ -6,6 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 import psycopg2
 import os
 from dotenv import load_dotenv
+import threading
+from flask_socketio import SocketIO
+from websocket import create_connection
+
 #laptop: "C:\Users\simon\Documents\GitHub\testwebsite\test_website"
 #pc: Users
 # gmail wachtwoord: tnsh ezxm ufxe hdlh
@@ -27,6 +31,75 @@ def get_db():
         password=os.getenv('POSTGRES_PASSWORD')
     )
     return db
+
+############################################################
+############################################################
+current_ticker = 'NASDAQ:AAPL'
+last_price = None  # Variabele om de laatste prijs op te slaan
+ws = None  # Houd de WebSocket-verbinding bij
+
+def fetch_live_price():
+    global ws, current_ticker, last_price
+    socket = 'wss://widgetdata.tradingview.com/socket.io/websocket'
+    ws = create_connection(socket)
+    session_id = "qs_session_live"
+    
+    def create_msg(ws, fun, arg):
+        ms = json.dumps({"m": fun, "p": arg})
+        msg = '~m~' + str(len(ms)) + '~m~' + ms
+        ws.send(msg)
+
+    create_msg(ws, 'quote_create_session', [session_id])
+    create_msg(ws, 'quote_set_fields', [session_id, "lp"])
+    create_msg(ws, 'quote_add_symbols', [session_id, f"{current_ticker}"])
+
+    while True:
+        try:
+            res = ws.recv()
+            print(res)
+            
+            if '~h~' in res:
+                ws.send(res)
+                print('Pong sent!')
+                continue
+            
+            if 'lp' in res:
+                price_match = re.search(r'"lp":([\d.]+)', res)
+                if price_match:
+                    last_price = float(price_match.group(1))  # Sla de laatste prijs op
+                    print(f"Laatste prijs opgeslagen: {last_price}")
+                    #socketio.emit('price_update', {'price': last_price})
+        except Exception as e:
+            print(f"WebSocket error: {e}")
+            break
+
+@socketio.on('change_ticker')
+def change_ticker(data):
+    global current_ticker, ws
+    current_ticker = data['ticker']  # Update de ticker
+    print(f"Ticker gewijzigd naar: {current_ticker}")
+    
+    # Update de ticker in de bestaande WebSocket-verbinding
+    session_id = "qs_session_live"
+    def create_msg(ws, fun, arg):
+        ms = json.dumps({"m": fun, "p": arg})
+        msg = '~m~' + str(len(ms)) + '~m~' + ms
+        ws.send(msg)
+
+    create_msg(ws, 'quote_add_symbols', [session_id, f"{current_ticker}"])
+
+@socketio.on('get_last_price')
+def send_last_price():
+    global last_price
+    if last_price is not None:
+        socketio.emit('price_update', {'price': last_price})
+    else:
+        socketio.emit('price_update', {'price': 'No price available'})
+
+# Run WebSocket in a separate thread
+threading.Thread(target=fetch_live_price).start()
+############################################################
+############################################################
 
 # Email configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com' 
